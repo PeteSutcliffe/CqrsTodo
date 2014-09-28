@@ -3,6 +3,8 @@ using StructureMap;
 using StructureMap.Graph;
 using Todo.Command;
 using Todo.CommandHandlers;
+using Todo.Domain;
+using Todo.Infrastructure.Azure;
 
 namespace Todo.Worker
 {
@@ -15,12 +17,11 @@ namespace Todo.Worker
                 x.Scan(scan =>
                 {
                     scan.TheCallingAssembly();
-                    scan.WithDefaultConventions();
+                    scan.AssemblyContainingType<CreateTodoListCommandHandler>();
+                    scan.ConnectImplementationsToTypesClosing(typeof (ICommandHandler<>));
                 });
-                x.For<ICommandHandler<CreateTodoList>>()
-                    .Use<CreateTodoListCommandHandler>();
 
-                var description = RoleEnvironment.GetConfigurationSettingValue("Microsoft.ServiceBus.ConnectionString");                
+                x.For<IRepository>().Use<TableStorageRepository>();
             });            
         }
     }

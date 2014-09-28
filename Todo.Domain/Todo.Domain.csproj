@@ -43,6 +43,7 @@
     <Compile Include="Events\TodoListCreated.cs" />
     <Compile Include="IEvent.cs" />
     <Compile Include="IEventProvider.cs" />
+    <Compile Include="ILoadFromEvents.cs" />
     <Compile Include="IRepository.cs" />
     <Compile Include="TodoList.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

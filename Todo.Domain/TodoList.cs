@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Todo.Domain.Events;
 
 namespace Todo.Domain
@@ -10,11 +6,10 @@ namespace Todo.Domain
     public class TodoList : EntityBase
     {
         private string _name;
-        private Guid _id;
 
         public void CreateNewList(Guid id, string name)
         {
-            RaiseEvent(new TodoListCreated{ListId = id, Name = name});
+            RaiseEvent(new TodoListCreated{AggregateId = id, Name = name});
         }
 
         protected override void RegisterEvents()
@@ -24,7 +19,7 @@ namespace Todo.Domain
 
         private void ApplyChange(TodoListCreated ev)
         {
-            _id = ev.ListId;
+            Id = ev.AggregateId;
             _name = ev.Name;
         }
     }

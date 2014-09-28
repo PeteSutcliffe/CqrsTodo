@@ -16,6 +16,7 @@ namespace Todo.CommandHandlers
         {
             var newTodo = new TodoList();
             newTodo.CreateNewList(command.Id, command.Name);
+            _repository.Save(newTodo);
         }
     }
 }

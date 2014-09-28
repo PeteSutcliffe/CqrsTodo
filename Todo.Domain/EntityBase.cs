@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Todo.Domain
 {
-    public abstract class EntityBase : IEventProvider
+    public abstract class EntityBase : IEventProvider, ILoadFromEvents
     {
         private readonly Dictionary<Type, Action<IEvent>> _events = new Dictionary<Type, Action<IEvent>>();
 
@@ -15,6 +15,7 @@ namespace Todo.Domain
         }
 
         public ICollection<IEvent> EventsRaised { get; private set; }
+        public Guid Id { get; protected set; }
 
         protected void RaiseEvent(IEvent ev)
         {
