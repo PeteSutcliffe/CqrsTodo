@@ -19,7 +19,7 @@ namespace Todo.Infrastructure.Azure
 
             if (!namespaceManager.QueueExists(QueueName))
             {
-                namespaceManager.QueueExists(QueueName);
+                namespaceManager.CreateQueue(QueueName);
             }           
         }
 

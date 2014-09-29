@@ -6,6 +6,7 @@ using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Table;
 using Newtonsoft.Json;
 using Todo.Domain;
+using Todo.Domain.Infrastructure;
 using Todo.Infrastructure.Azure.TableEntities;
 
 namespace Todo.Infrastructure.Azure

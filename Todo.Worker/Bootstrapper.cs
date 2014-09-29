@@ -4,6 +4,7 @@ using StructureMap.Graph;
 using Todo.Command;
 using Todo.CommandHandlers;
 using Todo.Domain;
+using Todo.Domain.Infrastructure;
 using Todo.Infrastructure.Azure;
 
 namespace Todo.Worker
@@ -21,7 +22,7 @@ namespace Todo.Worker
                     scan.ConnectImplementationsToTypesClosing(typeof (ICommandHandler<>));
                 });
 
-                x.For<IRepository>().Use<TableStorageRepository>();
+                x.For<IEventBus>().Use<EventBus>();
             });            
         }
     }

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Todo.Domain
+namespace Todo.Domain.Infrastructure
 {
     public interface IEventProvider
     {

@@ -3,20 +3,22 @@ using System.Diagnostics;
 using Microsoft.ServiceBus;
 using Microsoft.ServiceBus.Messaging;
 using StructureMap;
-using Todo.CommandHandlers;
+using Todo.Domain.Events;
 
 namespace Todo.Worker
 {
-    public class CommandReceiver
+    public class EventSubscriber
     {
         private readonly string _connectionString;
+        private readonly string _subscriptionName;
         private readonly IContainer _container;
-        private const string QueueName = "commandqueue";
-        private QueueClient _client;
+        private const string TopicName = "eventsqueue";
+        private SubscriptionClient _client;
 
-        public CommandReceiver(string connectionString, IContainer container)
+        public EventSubscriber(string connectionString, string subscriptionName, IContainer container)
         {
             _connectionString = connectionString;
+            _subscriptionName = subscriptionName;
             _container = container;            
         }
 
@@ -24,12 +26,17 @@ namespace Todo.Worker
         {
             var namespaceManager = NamespaceManager.CreateFromConnectionString(_connectionString);
 
-            if (!namespaceManager.QueueExists(QueueName))
+            if (!namespaceManager.QueueExists(TopicName))
             {
-                namespaceManager.CreateQueue(QueueName);
+                namespaceManager.CreateQueue(TopicName);
             }
 
-            _client = QueueClient.CreateFromConnectionString(_connectionString, QueueName, ReceiveMode.ReceiveAndDelete);
+            if (!namespaceManager.SubscriptionExists(TopicName, _subscriptionName))
+            {
+                namespaceManager.CreateSubscription(TopicName, _subscriptionName);
+            }
+
+            _client = SubscriptionClient.CreateFromConnectionString(_connectionString, TopicName, _subscriptionName, ReceiveMode.ReceiveAndDelete);
 
             var options = new OnMessageOptions();
             options.AutoComplete = true; // Indicates if the message-pump should call complete on messages after the callback has completed processing.
@@ -46,17 +53,12 @@ namespace Todo.Worker
                 var method = typeof(BrokeredMessage).GetMethod("GetBody", new Type[] { });
                 var generic = method.MakeGenericMethod(messageBodyType);
                 var messageBody = generic.Invoke(receivedMessage, null);
-                var command = (dynamic) messageBody;
+                var @event = (dynamic) messageBody;
 
-                var handlerType = typeof(ICommandHandler<>).MakeGenericType(command.GetType());
+                var handlerType = typeof(IEventHandler<>).MakeGenericType(@event.GetType());
                 dynamic handler = _container.GetInstance(handlerType);
-                handler.Handle(command);
+                handler.Handle(@event);
             }, options);
-        }
-
-        public void Stop()
-        {
-            _client.Close();
         }
 
         private void LogErrors(object sender, ExceptionReceivedEventArgs e)

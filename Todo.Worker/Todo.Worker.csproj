@@ -87,6 +87,7 @@
   <ItemGroup>
     <Compile Include="Bootstrapper.cs" />
     <Compile Include="CommandReceiver.cs" />
+    <Compile Include="EventSubscriber.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WorkerRole.cs" />
   </ItemGroup>
@@ -110,6 +111,10 @@
     <ProjectReference Include="..\Todo.Domain\Todo.Domain.csproj">
       <Project>{18F76BF0-4439-4E01-897C-75A0509D07BF}</Project>
       <Name>Todo.Domain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Todo.EventHandlers.ReadModel\Todo.EventHandlers.ReadModel.csproj">
+      <Project>{6554CCB8-270C-44B7-9514-DCE2BFAA1E4A}</Project>
+      <Name>Todo.EventHandlers.ReadModel</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
