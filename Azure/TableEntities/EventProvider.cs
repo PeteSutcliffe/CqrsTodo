@@ -11,5 +11,10 @@ namespace Todo.Infrastructure.Azure.TableEntities
             RowKey = id.ToString();
             Timestamp = Timestamp.DateTime;
         }
+
+        public EventProvider()
+        {
+            
+        }
     }
 }

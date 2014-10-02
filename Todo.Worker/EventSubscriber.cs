@@ -12,7 +12,7 @@ namespace Todo.Worker
         private readonly string _connectionString;
         private readonly string _subscriptionName;
         private readonly IContainer _container;
-        private const string TopicName = "eventsqueue";
+        private const string TopicName = "eventTopic";
         private SubscriptionClient _client;
 
         public EventSubscriber(string connectionString, string subscriptionName, IContainer container)
@@ -26,9 +26,9 @@ namespace Todo.Worker
         {
             var namespaceManager = NamespaceManager.CreateFromConnectionString(_connectionString);
 
-            if (!namespaceManager.QueueExists(TopicName))
+            if (!namespaceManager.TopicExists(TopicName))
             {
-                namespaceManager.CreateQueue(TopicName);
+                namespaceManager.CreateTopic(TopicName);
             }
 
             if (!namespaceManager.SubscriptionExists(TopicName, _subscriptionName))

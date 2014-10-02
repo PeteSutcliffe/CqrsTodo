@@ -17,7 +17,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Todo.CommandHandlers", "Tod
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Todo.Domain", "Todo.Domain\Todo.Domain.csproj", "{18F76BF0-4439-4E01-897C-75A0509D07BF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Todo.EventHandlers.ReadModel", "Todo.EventHandlers.ReadModel\Todo.EventHandlers.ReadModel.csproj", "{6554CCB8-270C-44B7-9514-DCE2BFAA1E4A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Todo.ReadModel", "Todo.EventHandlers.ReadModel\Todo.ReadModel.csproj", "{6554CCB8-270C-44B7-9514-DCE2BFAA1E4A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

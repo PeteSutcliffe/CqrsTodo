@@ -5,7 +5,7 @@ using System.Net;
 using System.Threading;
 using Microsoft.WindowsAzure.ServiceRuntime;
 using StructureMap;
-using Todo.EventHandlers.ReadModel;
+using Todo.ReadModel;
 
 namespace Todo.Worker
 {

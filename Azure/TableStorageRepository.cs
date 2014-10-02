@@ -6,6 +6,7 @@ using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Table;
 using Newtonsoft.Json;
 using Todo.Domain;
+using Todo.Domain.Events;
 using Todo.Domain.Infrastructure;
 using Todo.Infrastructure.Azure.TableEntities;
 
@@ -57,7 +58,7 @@ namespace Todo.Infrastructure.Azure
 
         public void Save(IEventProvider entity)
         {
-            var events = entity.EventsRaised;
+            var events = entity.EventsRaised();
 
             var retrieveOperation = TableOperation.Retrieve<EventProvider>(entity.GetType().AssemblyQualifiedName, entity.Id.ToString());
 
@@ -70,20 +71,18 @@ namespace Todo.Infrastructure.Azure
                 _eventProviders.Execute(insertOperation);
             }
 
-            var query = new TableQuery<Event>()
-                .Where(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, entity.Id.ToString()));
-            var existing = _events.ExecuteQuery(query).ToList();
-            
-            var currentVersion = existing.Any() ? existing.Max(e => int.Parse(e.RowKey)) : 0;
-            var batchOperation = new TableBatchOperation();
-
             //todo: concurrency
+            //var query = new TableQuery<Event>()
+            //    .Where(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, entity.Id.ToString()));
+            //var existing = _events.ExecuteQuery(query).ToList();                        
+
+            var batchOperation = new TableBatchOperation();            
 
             foreach (var ev in events)
             {
                 var type = ev.GetType().AssemblyQualifiedName;
                 var json = JsonConvert.SerializeObject(ev);
-                var tableEvent = new Event(entity.Id, ++currentVersion)
+                var tableEvent = new Event(entity.Id, ev.Version)
                 {
                     EventData = json,
                     EventType = type

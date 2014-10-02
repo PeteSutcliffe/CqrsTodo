@@ -3,7 +3,7 @@ using System.Runtime.Serialization;
 
 namespace Todo.Command
 {    
-    [DataContract]
+    [Serializable]
     public class CreateTodoList : ICommand
     {
         public CreateTodoList(Guid id, string name)
@@ -17,10 +17,8 @@ namespace Todo.Command
             
         }
 
-        [DataMember]
         public Guid Id { get; set; }
 
-        [DataMember]
         public string Name { get; set; }
     }
 }

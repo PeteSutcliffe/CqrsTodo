@@ -22,7 +22,9 @@ namespace Todo.Worker
                     scan.ConnectImplementationsToTypesClosing(typeof (ICommandHandler<>));
                 });
 
-                x.For<IEventBus>().Use<EventBus>();
+                var description = RoleEnvironment.GetConfigurationSettingValue("Microsoft.ServiceBus.ConnectionString");
+                x.For<IEventBus>().Use<EventBus>().Ctor<string>().Is(description);
+                x.For<IRepository>().Use<TableStorageRepository>();
             });            
         }
     }

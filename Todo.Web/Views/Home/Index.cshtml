@@ -36,58 +36,67 @@
             return resultArr;
         }
     });
-
-    todoApp.controller("ToDoCtrl", function ($scope) {
-        $scope.todo = model;
-
-        $scope.incompleteCount = function () {
-            var count = 0;
-            angular.forEach($scope.todo.items, function (item) {
-                if (!item.done) {
-                    count++;
-                }
-            });
-            return count;
-        }
-
-        $scope.warningLevel = function () {
-            return $scope.incompleteCount() < 3 ? "label-success" : "label-warning";
-        }
-        $scope.addNewItem = function (actionText) {
-            $scope.todo.items.push({ action: actionText, done: false });
-        }
-    });
-
+    
     todoApp
         .constant("listUrl", "/api/TodoList/")
-        .controller("ListController", function ($scope, $resource, listUrl) {
-            $scope.ProductsResource = $resource(listUrl + ":id", { id: "@@id" });
+        .constant("todoUrl", "/api/Todo/")
+        .controller("ListController", function($scope, $resource, listUrl, todoUrl) {
+            $scope.ListsResource = $resource(listUrl + ":id", { id: "@@id" });
+            $scope.TodoResource = $resource(todoUrl + ":id", { id: "@@id" },{
+            update: { method: 'PUT' }
+        });
 
             $scope.listData = model;
 
-            $scope.addTodo = function (newTodo) {
-                new $scope.ProductsResource(newTodo).$save().then(function(savedTodo) {
+            $scope.addTodoList = function(newTodoList) {
+                new $scope.ListsResource(newTodoList).$save().then(function(savedTodo) {
                     $scope.listData.lists.push(savedTodo);
+                    $scope.newTodoList = null;
+                    $scope.selectedList = savedTodo;
+                });
+            }
+
+            $scope.selectList = function(list) {
+                $scope.selectedList = list;
+            }
+
+            $scope.addTodo = function(newTodo) {
+                newTodo.listId = $scope.selectedList.id;
+                new $scope.TodoResource(newTodo).$save().then(function (savedTodo) {
+                    $scope.selectedList.todos.push(savedTodo);
                     $scope.newTodo = null;
-                });                
+                });
+            }
+
+            $scope.completeChanged = function(todo) {
+                new $scope.TodoResource(todo).$update();
             }
         });
     </script>
 </head>
-<body ng-controller="ToDoCtrl">
+<body ng-controller="ListController">
     <div class="page-header">
         <h1>
             To Do Lists
-            <span class="label label-default" ng-hide="incompleteCount()==0" ng-class="warningLevel()">
-                {{incompleteCount()}}
-            </span>
         </h1>
-        <div ng-controller="ListController">
+        <div>
             <ul>
-                <li ng-repeat="list in listData.lists">{{list.name}}</li>
-                <li><input type="text" ng-model="newTodo.name"/><button ng-click="addTodo(newTodo)">Add</button></li>
+                <li ng-repeat="list in listData.lists"><span ng-click="selectList(list)" style="cursor:pointer">{{list.name}}</span></li>
+                <li><input type="text" ng-model="newTodoList.name" /><button ng-click="addTodoList(newTodoList)">Add</button></li>
             </ul>
         </div>
-    </div>    
+        <div ng-hide="selectedList == null">
+            <h2>{{selectedList.name}}</h2>
+            <table>
+                <tr ng-repeat="item in selectedList.todos">
+                    <td>{{item.action}}</td>
+                    <td><input type="checkbox" ng-model="item.complete" ng-change="completeChanged(item)"/></td>
+                </tr>
+                <tr>
+                    <td><input type="text" ng-model="newTodo.action" /></td><td><button ng-click="addTodo(newTodo)">Add</button></td>
+                </tr>
+            </table>
+        </div>
+    </div>
 </body>
 </html>

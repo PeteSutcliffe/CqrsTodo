@@ -39,14 +39,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="EntityBase.cs" />
+    <Compile Include="BaseAggregateRoute.cs" />
+    <Compile Include="BaseEntity.cs" />
     <Compile Include="Events\IEventHandler.cs" />
+    <Compile Include="Events\TodoCompletedChanged.cs" />
+    <Compile Include="Events\TodoCreated.cs" />
     <Compile Include="Events\TodoListCreated.cs" />
     <Compile Include="Events\IEvent.cs" />
     <Compile Include="Infrastructure\IEventBus.cs" />
     <Compile Include="Infrastructure\IEventProvider.cs" />
     <Compile Include="Infrastructure\ILoadFromEvents.cs" />
     <Compile Include="Infrastructure\IRepository.cs" />
+    <Compile Include="Todo.cs" />
     <Compile Include="TodoList.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

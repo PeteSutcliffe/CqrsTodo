@@ -40,10 +40,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CreateTodo.cs" />
     <Compile Include="CreateTodoList.cs" />
     <Compile Include="ICommand.cs" />
     <Compile Include="Infrastructure\ICommandBus.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SetCompleted.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.ServiceBus;
 using Microsoft.ServiceBus.Messaging;
 using Todo.Domain;
+using Todo.Domain.Events;
 using Todo.Domain.Infrastructure;
 
 namespace Todo.Infrastructure.Azure
@@ -24,7 +24,7 @@ namespace Todo.Infrastructure.Azure
             }
         }
 
-        public void Publish(ICollection<IEvent> events)
+        public void Publish(IEnumerable<IEvent> events)
         {   
             var topicClient = TopicClient.CreateFromConnectionString(_connectionString, TopicName);
             
