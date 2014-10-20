@@ -50,6 +50,12 @@ namespace Todo.Worker
 
                 var handlerType = typeof(ICommandHandler<>).MakeGenericType(command.GetType());
                 dynamic handler = _container.GetInstance(handlerType);
+
+                var transactionHandlerType = typeof (TransactionHandler<,>).MakeGenericType(command.GetType(),
+                    handler.GetType());
+                dynamic transactionHandler = _container.GetInstance(transactionHandlerType);
+                transactionHandler.Execute(command, handler);
+
                 handler.Handle(command);
             }, options);
         }

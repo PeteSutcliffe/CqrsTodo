@@ -13,7 +13,7 @@ namespace Todo.Domain
         private readonly ICollection<IEvent> _eventsRaised;
         private readonly Dictionary<Type, Action<IEvent>> _events = new Dictionary<Type, Action<IEvent>>();
 
-        IEnumerable<IEvent> IEventProvider.EventsRaised()
+        IEnumerable<IEvent> IEventProvider.GetChanges()
         {
             return _eventsRaised;
         }

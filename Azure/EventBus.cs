@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.ServiceBus;
 using Microsoft.ServiceBus.Messaging;
-using Todo.Domain;
 using Todo.Domain.Events;
 using Todo.Domain.Infrastructure;
 

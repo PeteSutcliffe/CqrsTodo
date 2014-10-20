@@ -25,6 +25,7 @@ namespace Todo.Worker
                 var description = RoleEnvironment.GetConfigurationSettingValue("Microsoft.ServiceBus.ConnectionString");
                 x.For<IEventBus>().Use<EventBus>().Ctor<string>().Is(description);
                 x.For<IRepository>().Use<TableStorageRepository>();
+                x.For<IUnitOfWork>().Use<UnitOfWork>();
             });            
         }
     }

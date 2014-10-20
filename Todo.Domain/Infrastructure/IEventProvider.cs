@@ -7,7 +7,7 @@ namespace Todo.Domain.Infrastructure
     public interface IEventProvider : ILoadFromEvents
     {
         Guid Id { get; }
-        IEnumerable<IEvent> EventsRaised();
+        IEnumerable<IEvent> GetChanges();
     }
 
     public interface ISubEventProvider : IEventProvider

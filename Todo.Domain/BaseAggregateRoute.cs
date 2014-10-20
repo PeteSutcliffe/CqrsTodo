@@ -22,9 +22,9 @@ namespace Todo.Domain
                
         public Guid Id { get; protected set; }
         
-        public IEnumerable<IEvent> EventsRaised()
+        public IEnumerable<IEvent> GetChanges()
         {
-            return _eventsRaised.Concat(_childEventProviders.SelectMany(p => p.EventsRaised()));
+            return _eventsRaised.Concat(_childEventProviders.SelectMany(p => p.GetChanges()));
         }
 
         protected void RaiseEvent(IEvent ev)

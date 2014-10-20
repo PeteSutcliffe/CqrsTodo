@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Microsoft.WindowsAzure;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Table;
 using Newtonsoft.Json;
-using Todo.Domain;
 using Todo.Domain.Events;
 using Todo.Domain.Infrastructure;
 using Todo.Infrastructure.Azure.TableEntities;
@@ -37,7 +35,7 @@ namespace Todo.Infrastructure.Azure
             _events = tableClient.GetTableReference("events");
         }
 
-        public T Load<T>(Guid id) where T : ILoadFromEvents, new()
+        public T Load<T>(Guid id) where T : IEventProvider, new()
         {
             var query = new TableQuery<Event>()
                 .Where(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, id.ToString()));
@@ -56,17 +54,17 @@ namespace Todo.Infrastructure.Azure
             return entity;
         }
 
-        public void Save(IEventProvider entity)
+        public void Save(IEventProvider aggregate)
         {
-            var events = entity.EventsRaised();
+            var events = aggregate.GetChanges();
 
-            var retrieveOperation = TableOperation.Retrieve<EventProvider>(entity.GetType().AssemblyQualifiedName, entity.Id.ToString());
+            var retrieveOperation = TableOperation.Retrieve<EventProvider>(aggregate.GetType().AssemblyQualifiedName, aggregate.Id.ToString());
 
             var retrievedResult = _eventProviders.Execute(retrieveOperation);
 
             if (retrievedResult.Result == null)
             {
-                var provider = new EventProvider(entity.Id, entity.GetType().AssemblyQualifiedName);
+                var provider = new EventProvider(aggregate.Id, aggregate.GetType().AssemblyQualifiedName);
                 var insertOperation = TableOperation.Insert(provider);
                 _eventProviders.Execute(insertOperation);
             }
@@ -82,7 +80,7 @@ namespace Todo.Infrastructure.Azure
             {
                 var type = ev.GetType().AssemblyQualifiedName;
                 var json = JsonConvert.SerializeObject(ev);
-                var tableEvent = new Event(entity.Id, ev.Version)
+                var tableEvent = new Event(aggregate.Id, ev.Version)
                 {
                     EventData = json,
                     EventType = type
